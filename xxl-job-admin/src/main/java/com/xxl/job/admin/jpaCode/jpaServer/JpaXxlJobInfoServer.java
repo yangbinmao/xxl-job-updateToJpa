@@ -66,10 +66,6 @@ public class JpaXxlJobInfoServer {
             @Override
             public Predicate toPredicate(Root<XxlJobInfoEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList();//这是条件集合
-                List<Order> orders = new ArrayList();//这是排序集合
-                //排序
-                orders.add(criteriaBuilder.desc(root.get("id")));
-                criteriaQuery.orderBy(orders);
                 //条件
                 if(jobGroup>0){
                     predicates.add(criteriaBuilder.equal(root.get("jobGroup"), jobGroup ));

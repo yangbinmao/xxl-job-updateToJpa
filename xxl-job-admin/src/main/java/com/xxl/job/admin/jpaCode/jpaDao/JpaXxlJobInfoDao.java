@@ -25,7 +25,7 @@ public interface JpaXxlJobInfoDao extends JpaRepository<XxlJobInfoEntity,Integer
     @Transactional
     @Modifying
     @Query("delete from XxlJobInfoEntity x where x.id=?1")
-    public Long delete(@Param("id") int id);
+    public int delete(@Param("id") int id);
 
     @Query("select x from XxlJobInfoEntity x where x.jobGroup = ?1 ")
     public List<XxlJobInfoEntity> getJobsByGroup(@Param("jobGroup") int jobGroup);
