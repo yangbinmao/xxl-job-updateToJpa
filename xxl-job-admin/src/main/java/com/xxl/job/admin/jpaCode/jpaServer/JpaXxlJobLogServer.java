@@ -212,4 +212,9 @@ public class JpaXxlJobLogServer {
         return xxlJobLogDao.clearLog(logIds);
     }
 
+    public List<Long> findFailJobLogIds( int pagesize){
+
+        //todo 需要测试验证
+        return xxlJobLogDao.findFailJobLogIds(PageRequest.of(0,pagesize));
+    }
     }

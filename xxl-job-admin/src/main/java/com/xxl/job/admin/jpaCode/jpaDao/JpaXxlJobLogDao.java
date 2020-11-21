@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,4 +44,7 @@ public interface JpaXxlJobLogDao extends JpaRepository<XxlJobLogEntity,Long>, Jp
     @Modifying
     @Query("delete from XxlJobLogEntity x where x.id in ?1")
     public int clearLog(List<Long> logIds);
+
+    @Query("select x.id from XxlJobLogEntity x where not ((x.triggerCode in (0,200) and x.handleCode=0 ) or (x.handleCode=200)) and x.alarmStatus=0 order by x.id asc ")
+    public List<Long> findFailJobLogIds( Pageable pageable);
 }

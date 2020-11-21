@@ -113,4 +113,9 @@ public class XxlJobLogDaoToJpaTest {
         System.out.println(apiDao.clearLog(longs1));
 
     }
+    @Test
+    public void findFailJobLogIds(){
+        System.out.println(apiDao.findFailJobLogIds(10));
+        System.out.println(dao.findFailJobLogIds(10));
+    }
 }
