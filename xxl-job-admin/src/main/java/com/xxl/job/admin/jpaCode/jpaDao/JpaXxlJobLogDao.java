@@ -10,6 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YBM on 2020/11/15 22:46
@@ -28,4 +32,15 @@ public interface JpaXxlJobLogDao extends JpaRepository<XxlJobLogEntity,Long>, Jp
     @Modifying
     @Query("delete from XxlJobLogEntity x where x.id=?1")
     public int delete(@Param("id")long jobId);
+
+    @Query("select count(x.triggerCode) as triggerDayCount  ," +
+            "sum (case when(x.triggerCode in (0 ,200) and x.handleCode=0 )then 1 else 0 end ) as triggerDayCountRunning ," +
+            "sum (case when  x.handleCode=200 then 1 else 0 end ) as triggerDayCountSuc  " +
+            "from  XxlJobLogEntity  x where x.triggerTime between ?1 and  ?2 ")
+    public Map<String,Object> findLogReport(Date from , Date to);
+
+    @Transactional
+    @Modifying
+    @Query("delete from XxlJobLogEntity x where x.id in ?1")
+    public int clearLog(List<Long> logIds);
 }
