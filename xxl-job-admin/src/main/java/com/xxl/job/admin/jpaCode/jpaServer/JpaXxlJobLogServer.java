@@ -144,6 +144,7 @@ public class JpaXxlJobLogServer {
     }
 
     public Map<String, Object> findLogReport(Date from,Date to){
+        //todo 这个数据获取没有问题，但是打印结果时候需要测试确定
         return  xxlJobLogDao.findLogReport(from,to);
     }
 
@@ -213,8 +214,16 @@ public class JpaXxlJobLogServer {
     }
 
     public List<Long> findFailJobLogIds( int pagesize){
-
         //todo 需要测试验证
         return xxlJobLogDao.findFailJobLogIds(PageRequest.of(0,pagesize));
     }
+
+    public int updateAlarmStatus(long logId,int oldAlarmStatus,int newAlarmStatus){
+        return xxlJobLogDao.updateAlarmStatus(logId, oldAlarmStatus, newAlarmStatus);
+    }
+
+    public List<Long> findLostJobIds(Date losedTime){
+        return xxlJobLogDao.findLostJobIds(losedTime);
+    }
+
     }

@@ -26,19 +26,7 @@ public interface JpaXxlJobGroupDao extends JpaRepository<XxlJobGroupEntity,Integ
     @Query("select x from XxlJobGroupEntity x WHERE x.addressType = ?1 order by  x.appname ,x.title,x.id asc ")
     public List<XxlJobGroupEntity> findByAddressType(int addressType);
 
-    /*
-    INSERT INTO xxl_job_group ( `app_name`, `title`, `address_type`, `address_list`)
-		values ( #{appname}, #{title}, #{addressType}, #{addressList});
-    * */
 
-//    public Integer save(XxlJobGroupEntity xxlJobGroupEntity); //这个JpaRepository内有
-
-//UPDATE xxl_job_group
-//		SET `app_name` = #{appname},
-//			`title` = #{title},
-//			`address_type` = #{addressType},
-//			`address_list` = #{addressList}
-//		WHERE id = #{id}
     @Transactional
     @Modifying
     @Query("update XxlJobGroupEntity x set x.appname=:#{#xxlJobGroupEntity.appname},x.title=:#{#xxlJobGroupEntity.title},x.addressType=:#{#xxlJobGroupEntity.addressType},x.addressList=:#{#xxlJobGroupEntity.addressList} WHERE x.id =:#{#xxlJobGroupEntity.id}")
@@ -53,14 +41,5 @@ public interface JpaXxlJobGroupDao extends JpaRepository<XxlJobGroupEntity,Integ
     public XxlJobGroupEntity load(@Param("id") int id);
 
 
-//    public List<XxlJobGroupEntity> pageList(@Param("offset") int offset,
-//                                      @Param("pagesize") int pagesize,
-//                                      @Param("appname") String appname,
-//                                      @Param("title") String title);
-//
-//    public int pageListCount(@Param("offset") int offset,
-//                             @Param("pagesize") int pagesize,
-//                             @Param("appname") String appname,
-//                             @Param("title") String title);
 
 }

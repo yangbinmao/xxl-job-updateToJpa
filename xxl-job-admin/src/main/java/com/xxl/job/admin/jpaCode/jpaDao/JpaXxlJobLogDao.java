@@ -47,4 +47,13 @@ public interface JpaXxlJobLogDao extends JpaRepository<XxlJobLogEntity,Long>, Jp
 
     @Query("select x.id from XxlJobLogEntity x where not ((x.triggerCode in (0,200) and x.handleCode=0 ) or (x.handleCode=200)) and x.alarmStatus=0 order by x.id asc ")
     public List<Long> findFailJobLogIds( Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("update XxlJobLogEntity x set x.alarmStatus=?3 where x.id=?1 and x.alarmStatus=?2 ")
+    public int updateAlarmStatus(long logId,int oldAlarmStatus,int newAlarmStatus);
+
+    @Query("select x.id from XxlJobLogEntity x where x.triggerCode = 200 and x.handleCode=0 and x.triggerTime <= ?1 and x.executorAddress not in (select r.registryValue from XxlJobRegistryEntity r)")
+    public List<Long> findLostJobIds(Date losedTime);
+
 }

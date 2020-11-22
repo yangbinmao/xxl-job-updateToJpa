@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= XxlJobAdminApplication.class)
-public class JobInfoDaoToJpaTest {
+public class jobInfoDaoToJpaTest {
 
     @Resource
     XxlJobInfoDao apiDao;

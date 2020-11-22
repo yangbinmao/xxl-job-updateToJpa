@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= XxlJobAdminApplication.class)
-public class XxlJobLogDaoToJpaTest {
+public class jobLogDaoToJpaTest {
 
     @Resource
     XxlJobLogDao apiDao;
@@ -117,5 +117,22 @@ public class XxlJobLogDaoToJpaTest {
     public void findFailJobLogIds(){
         System.out.println(apiDao.findFailJobLogIds(10));
         System.out.println(dao.findFailJobLogIds(10));
+    }
+
+    @Test
+    public void updateAlarmStatus(){
+        long logId=2L;
+        int oldAlarmStatus=1;
+        int newAlarmStatus=3;
+//        System.out.println(apiDao.findFailJobLogIds(10));
+        System.out.println(dao.updateAlarmStatus(logId,oldAlarmStatus,newAlarmStatus));
+    }
+
+    @Test
+    public void findLostJobIds() throws ParseException {
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date from =sdf.parse("2020-10-21 23:59:51");
+        System.out.println(dao.findLostJobIds(from));
+        System.out.println(apiDao.findLostJobIds(from));
     }
 }

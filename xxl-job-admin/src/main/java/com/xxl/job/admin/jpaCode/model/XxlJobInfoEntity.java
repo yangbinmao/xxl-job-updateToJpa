@@ -69,12 +69,5 @@ public class XxlJobInfoEntity {
 	@Column(name="trigger_next_time")
 	private long triggerNextTime;	// 下次调度时间
 
-	public long getTriggerLastTime() {
-		return triggerLastTime;
-	}
-
-	public void setTriggerLastTime(long triggerLastTime) {
-		this.triggerLastTime = triggerLastTime;
-	}
 
 }
