@@ -50,7 +50,7 @@ public class TriggerCallbackThread {
 
         // valid
         if (XxlJobExecutor.getAdminBizList() == null) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor callback config fail, adminAddresses is null.");
+            logger.warn(">>>>>>>>>>> xxl-job, executor callback com.ybm.xxlJob.config fail, adminAddresses is null.");
             return;
         }
 

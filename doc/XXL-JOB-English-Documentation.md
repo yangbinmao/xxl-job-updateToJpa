@@ -479,7 +479,7 @@ The concret content of configuration file as follows:
     xxl.job.executor.port=9999
     
     ### xxl-job log path：runtime log path of the job instance
-    xxl.job.executor.logpath=/data/applogs/xxl-job/jobhandler/
+    xxl.job.executor.logpath=/data/applogs/xxl-job/com.ybm.xxlJob.jobhandler/
     
     ### xxl-job, access token：xxl-job access token,enabled if it not blank
     xxl.job.accessToken=
@@ -495,7 +495,7 @@ Concrete contet describe as follows：
 
 ```
 <!-- configure 01、JobHandler scan path：auto scan JobHandler bean managed by container -->
-<context:component-scan base-package="com.xxl.job.executor.service.jobhandler" />
+<context:component-scan base-package="com.xxl.job.executor.service.com.ybm.xxlJob.jobhandler" />
 
 <!-- configure 02、Excutor：executer core configure -->
 <bean id="xxlJobExecutor" class="com.xxl.job.core.executor.XxlJobExecutor" init-method="start" destroy-method="destroy" >
@@ -602,7 +602,7 @@ The task logic exist in the executor project as JobHandler,the develop steps as 
 #### Step 1:develp obHandler in the executor project
     - 1, create new java class implent com.xxl.job.core.handler.IJobHandler;
     - 2, if you add @Component annotation on the top of the class name it’s will be managed as a bean instance by spring container;
-    - 3, add  “@JobHandler(value=" customize jobhandler name")” annotation，the value stand for JobHandler name,it will be used as JobHandler property when create a new task in the schedule center.
+    - 3, add  “@JobHandler(value=" customize com.ybm.xxlJob.jobhandler name")” annotation，the value stand for JobHandler name,it will be used as JobHandler property when create a new task in the schedule center.
 
 
 #### Step 2:create task in schedule center
@@ -865,7 +865,7 @@ When schedule center of the schedule module was deployed as web service, on one 
 
 The source code location of schedule center’s “log callback api service” as shown below:
 ```
-xxl-job-admin#com.xxl.job.admin.controller.JobApiController.callback
+xxl-job-admin#com.xxl.job.admin.com.ybm.xxlJob.controller.JobApiController.callback
 ```
 
 Executor will execute task when it receive task execute request.it will notify the task execute result to schedule center when the task is done. 
@@ -941,7 +941,7 @@ XXL-JOB will generate a log file for every schedule request, the log info will b
 
 (history version is implemented by overriding LOG4J’s Appender so it exists dependency restrictions, The way has been discraded in the new version)
 
-The location of log file can be specified in executor configuration file, default pattern is : /data/applogs/xxl-job/jobhandler/formatted date/primary key for database scheduling log records.log”.
+The location of log file can be specified in executor configuration file, default pattern is : /data/applogs/xxl-job/com.ybm.xxlJob.jobhandler/formatted date/primary key for database scheduling log records.log”.
 
 When start child thread in JobHandler, child thread will print log in parent JobHandler thread’s execute log in order to trace execute log.
 

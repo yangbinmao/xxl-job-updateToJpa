@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * index controller
+ * index com.ybm.xxlJob.controller
  * @author xuxueli 2015-12-19 16:13:16
  */
 @Controller

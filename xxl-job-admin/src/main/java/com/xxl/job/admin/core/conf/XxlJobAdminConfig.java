@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 
 /**
- * xxl-job config
+ * xxl-job com.ybm.xxlJob.config
  *
  * @author xuxueli 2017-04-28
  */

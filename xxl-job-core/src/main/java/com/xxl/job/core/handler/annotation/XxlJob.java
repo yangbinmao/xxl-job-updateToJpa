@@ -3,7 +3,7 @@ package com.xxl.job.core.handler.annotation;
 import java.lang.annotation.*;
 
 /**
- * annotation for method jobhandler
+ * annotation for method com.ybm.xxlJob.jobhandler
  *
  * @author xuxueli 2019-12-11 20:50:13
  */
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 public @interface XxlJob {
 
     /**
-     * jobhandler name
+     * com.ybm.xxlJob.jobhandler name
      */
     String value();
 

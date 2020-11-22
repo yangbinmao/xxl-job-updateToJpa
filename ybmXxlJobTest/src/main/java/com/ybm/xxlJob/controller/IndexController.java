@@ -1,4 +1,4 @@
-//package com.xxl.job.executor.mvc.com.ybm.xxlJob.controller;
+package com.ybm.xxlJob.controller;//package com.xxl.job.executor.mvc.com.ybm.xxlJob.controller;
 //
 //import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 //import org.springframework.stereotype.Controller;

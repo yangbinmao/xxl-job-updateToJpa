@@ -22,7 +22,7 @@ public class JFinalCoreConfig extends JFinalConfig {
 	private XxlJobExecutor xxlJobExecutor = null;
 	private void initXxlJobExecutor() {
 
-		// registry jobhandler
+		// registry com.ybm.xxlJob.jobhandler
 		XxlJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
 		XxlJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
 		XxlJobExecutor.registJobHandler("httpJobHandler", new HttpJobHandler());

@@ -621,7 +621,7 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_jo
     ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
     xxl.job.executor.port=9999
     ### 执行器运行日志文件存储磁盘路径 [选填] ：需要对该路径拥有读写权限；为空则使用默认路径；
-    xxl.job.executor.logpath=/data/applogs/xxl-job/jobhandler
+    xxl.job.executor.logpath=/data/applogs/xxl-job/com.ybm.xxlJob.jobhandler
     ### 执行器日志文件保存天数 [选填] ： 过期日志自动清理, 限制值大于等于3时生效; 否则, 如-1, 关闭自动清理功能；
     xxl.job.executor.logretentiondays=30
     
@@ -630,14 +630,14 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_jo
 
 执行器组件，配置文件地址：
 
-    /xxl-job/xxl-job-executor-samples/xxl-job-executor-sample-springboot/src/main/java/com/xxl/job/executor/core/config/XxlJobConfig.java
+    /xxl-job/xxl-job-executor-samples/xxl-job-executor-sample-springboot/src/main/java/com/xxl/job/executor/core/com.ybm.xxlJob.config/XxlJobConfig.java
 
 执行器组件，配置内容说明：
 
 ```
 @Bean
 public XxlJobSpringExecutor xxlJobExecutor() {
-    logger.info(">>>>>>>>>>> xxl-job config init.");
+    logger.info(">>>>>>>>>>> xxl-job com.ybm.xxlJob.config init.");
     XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
     xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
     xxlJobSpringExecutor.setAppname(appname);
@@ -785,7 +785,7 @@ Bean模式任务，支持基于方法的开发方式，每个任务对应一个�
     3、执行日志：需要通过 "XxlJobLogger.log" 打印执行日志；
     
 ```
-// 可参考Sample示例执行器中的 "com.xxl.job.executor.service.jobhandler.SampleXxlJob" ，如下：
+// 可参考Sample示例执行器中的 "com.xxl.job.executor.service.com.ybm.xxlJob.jobhandler.SampleXxlJob" ，如下：
 @XxlJob("demoJobHandler")
 public ReturnT<String> execute(String param) {
 
@@ -1070,7 +1070,7 @@ XXL-JOB的每个调度任务虽然在调度模块是并行调度执行的，但�
 
 调度中心提供的"日志回调服务API服务"代码位置如下：
 ```
-xxl-job-admin#com.xxl.job.admin.controller.JobApiController.callback
+xxl-job-admin#com.xxl.job.admin.com.ybm.xxlJob.controller.JobApiController.callback
 ```
 
 “执行器”在接收到任务执行请求后，执行任务，在执行结束之后会将执行结果回调通知“调度中心”：
@@ -1167,7 +1167,7 @@ XXL-JOB会为每次调度请求生成一个单独的日志文件，需要通过 
 
 (历史版本通过重写LOG4J的Appender实现，存在依赖限制，该方式在新版本已经被抛弃)
 
-日志文件存放的位置可在“执行器”配置文件进行自定义，默认目录格式为：/data/applogs/xxl-job/jobhandler/“格式化日期”/“数据库调度日志记录的主键ID.log”。
+日志文件存放的位置可在“执行器”配置文件进行自定义，默认目录格式为：/data/applogs/xxl-job/com.ybm.xxlJob.jobhandler/“格式化日期”/“数据库调度日志记录的主键ID.log”。
 
 在JobHandler中开启子线程时，子线程将会将会把日志打印在父线程即JobHandler的执行日志中，方便日志追踪。
 
@@ -1319,7 +1319,7 @@ XXL-JOB 目标是一种跨平台、跨语言的任务调度规范和协议。
 
 ### 6.1 调度中心 RESTful API
 
-API服务位置：com.xxl.job.core.biz.AdminBiz （ com.xxl.job.admin.controller.JobApiController ）
+API服务位置：com.xxl.job.core.biz.AdminBiz （ com.xxl.job.admin.com.ybm.xxlJob.controller.JobApiController ）
 API服务请求参考代码：com.xxl.job.adminbiz.AdminBizTest
 
 #### a、任务回调
@@ -1867,7 +1867,7 @@ Tips: 历史版本(V1.3.x)目前已经Release至稳定版本, 进入维护阶段
 - 2、任务告警逻辑调整，改为通过扫描失败日志方式触发。一方面精确扫描失败任务，降低扫描范围；另一方面取消内存队列，降低线程内存消耗；
 - 3、Quartz触发线程池废弃并替换为 "XxlJobThreadPool"，降低线程切换、内存占用带来的消耗，提高调度性能；
 - 4、调度线程池隔离，拆分为"Fast"和"Slow"两个线程池，1分钟窗口期内任务耗时达500ms超过10次，该窗口期内判定为慢任务，慢任务自动降级进入"Slow"线程池，避免耗尽调度线程，提高系统稳定性；
-- 5、执行器热部署时JobHandler重新初始化，修复由此导致的 "jobhandler naming conflicts." 问题；
+- 5、执行器热部署时JobHandler重新初始化，修复由此导致的 "com.ybm.xxlJob.jobhandler naming conflicts." 问题；
 - 6、新增Class的加载缓存，解决频繁加载Class会使jvm的方法区空间不足导致OOM的问题；
 - 7、任务支持更换绑定执行器，方便任务分组转移和管理；
 - 8、调度中心告警邮件发送组件改为 “spring-boot-starter-mail”；
