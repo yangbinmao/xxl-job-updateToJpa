@@ -2,27 +2,27 @@ package com.xxl.job.admin.controller;
 
 import com.xxl.job.admin.core.cron.CronExpression;
 import com.xxl.job.admin.core.exception.XxlJobException;
-import com.xxl.job.admin.core.model.XxlJobGroup;
-import com.xxl.job.admin.core.model.XxlJobInfo;
-import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import com.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 import com.xxl.job.admin.core.trigger.TriggerTypeEnum;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.admin.dao.XxlJobGroupDao;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobGroupServer;
+import com.xxl.job.admin.jpaCode.model.XxlJobGroupEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobUserEntity;
 import com.xxl.job.admin.service.LoginService;
 import com.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.*;
@@ -35,11 +35,15 @@ import java.util.*;
 @RequestMapping("/jobinfo")
 public class JobInfoController {
 
-	@Resource
-	private XxlJobGroupDao xxlJobGroupDao;
-	@Resource
+//	@Resource
+//	private XxlJobGroupDao xxlJobGroupDao;
+	@Autowired
 	private XxlJobService xxlJobService;
-	
+
+
+	@Autowired
+	private JpaXxlJobGroupServer xxlJobGroupDao;
+
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
 
@@ -49,10 +53,10 @@ public class JobInfoController {
 		model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
 
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<XxlJobGroupEntity> jobGroupList_all =  xxlJobGroupDao.findAll();
 
 		// filter group
-		List<XxlJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
+		List<XxlJobGroupEntity> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
 		if (jobGroupList==null || jobGroupList.size()==0) {
 			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
 		}
@@ -63,10 +67,10 @@ public class JobInfoController {
 		return "jobinfo/jobinfo.index";
 	}
 
-	public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all){
-		List<XxlJobGroup> jobGroupList = new ArrayList<>();
+	public static List<XxlJobGroupEntity> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroupEntity> jobGroupList_all){
+		List<XxlJobGroupEntity> jobGroupList = new ArrayList<>();
 		if (jobGroupList_all!=null && jobGroupList_all.size()>0) {
-			XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+			XxlJobUserEntity loginUser = (XxlJobUserEntity) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 			if (loginUser.getRole() == 1) {
 				jobGroupList = jobGroupList_all;
 			} else {
@@ -74,7 +78,7 @@ public class JobInfoController {
 				if (loginUser.getPermission()!=null && loginUser.getPermission().trim().length()>0) {
 					groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
 				}
-				for (XxlJobGroup groupItem:jobGroupList_all) {
+				for (XxlJobGroupEntity groupItem:jobGroupList_all) {
 					if (groupIdStrs.contains(String.valueOf(groupItem.getId()))) {
 						jobGroupList.add(groupItem);
 					}
@@ -84,30 +88,30 @@ public class JobInfoController {
 		return jobGroupList;
 	}
 	public static void validPermission(HttpServletRequest request, int jobGroup) {
-		XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+		XxlJobUserEntity loginUser = (XxlJobUserEntity) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 		if (!loginUser.validPermission(jobGroup)) {
 			throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username="+ loginUser.getUsername() +"]");
 		}
 	}
-	
+
 	@RequestMapping("/pageList")
 	@ResponseBody
-	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,  
+	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
 			@RequestParam(required = false, defaultValue = "10") int length,
 			int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
-		
+
 		return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 	}
-	
+
 	@RequestMapping("/add")
 	@ResponseBody
-	public ReturnT<String> add(XxlJobInfo jobInfo) {
+	public ReturnT<String> add(XxlJobInfoEntity jobInfo) {
 		return xxlJobService.add(jobInfo);
 	}
-	
+
 	@RequestMapping("/update")
 	@ResponseBody
-	public ReturnT<String> update(XxlJobInfo jobInfo) {
+	public ReturnT<String> update(XxlJobInfoEntity jobInfo) {
 		return xxlJobService.update(jobInfo);
 	}
 	

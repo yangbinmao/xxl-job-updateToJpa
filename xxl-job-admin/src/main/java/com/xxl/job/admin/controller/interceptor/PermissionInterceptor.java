@@ -1,10 +1,11 @@
 package com.xxl.job.admin.controller.interceptor;
 
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
-import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.admin.dao.XxlJobUserDao;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobUsersServer;
+import com.xxl.job.admin.jpaCode.model.XxlJobUserEntity;
 import com.xxl.job.admin.service.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -24,8 +25,11 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private LoginService loginService;
 
-	@Resource
-	XxlJobUserDao xxlJobUserDao;
+//	@Resource
+//	XxlJobUserDao xxlJobUserDao;
+
+	@Autowired
+	JpaXxlJobUsersServer xxlJobUserDao;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -45,7 +49,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		if (needLogin) {
-			XxlJobUser loginUser = loginService.ifLogin(request, response);
+			XxlJobUserEntity loginUser = loginService.ifLogin(request, response);
 			loginUser=xxlJobUserDao.loadByUserName("admin");
 			if (loginUser == null) {
 				response.setStatus(302);

@@ -1,10 +1,7 @@
 package com.xxl.job.admin.jpaCode.jpaDao;
 
-import com.xxl.job.admin.core.model.XxlJobLogReport;
-import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
-import com.xxl.job.admin.jpaCode.model.XxlJobLogGlueEntity;
+
 import com.xxl.job.admin.jpaCode.model.XxlJobLogReportEntity;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * job log
@@ -30,7 +28,7 @@ public interface JpaXxlJobLogReportDao extends JpaRepository<XxlJobLogReportEnti
 	@Query("select x from XxlJobLogReportEntity x where x.triggerDay between ?1 and ?2 order by x.triggerDay asc ")
 	public List<XxlJobLogReportEntity> queryLogReport(Date triggerDayFrom, Date triggerDayTo);
 
-	@Query("select sum(x.runningCount) as running_count,sum(x.sucCount) as suc_count,sum(x.failCount) as fail_count from XxlJobLogReportEntity x ")
-	public XxlJobLogReportEntity queryLogReportTotal();
+	@Query("select sum(x.runningCount) as runningCount , sum(x.sucCount) as sucCount ,sum(x.failCount) as failCount from XxlJobLogReportEntity x ")
+	public Map<String,Integer> queryLogReportTotal();
 
 }

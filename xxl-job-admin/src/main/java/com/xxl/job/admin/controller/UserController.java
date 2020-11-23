@@ -1,13 +1,14 @@
 package com.xxl.job.admin.controller;
 
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
-import com.xxl.job.admin.core.model.XxlJobGroup;
-import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.admin.dao.XxlJobGroupDao;
-import com.xxl.job.admin.dao.XxlJobUserDao;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobGroupServer;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobUsersServer;
+import com.xxl.job.admin.jpaCode.model.XxlJobGroupEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobUserEntity;
 import com.xxl.job.admin.service.LoginService;
 import com.xxl.job.core.biz.model.ReturnT;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -29,17 +29,22 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
-    @Resource
-    private XxlJobUserDao xxlJobUserDao;
-    @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+//    @Resource
+//    private XxlJobUserDao xxlJobUserDao;
+//    @Resource
+//    private XxlJobGroupDao xxlJobGroupDao;
+
+    @Autowired
+    private JpaXxlJobUsersServer xxlJobUserDao;
+    @Autowired
+    private JpaXxlJobGroupServer xxlJobGroupDao;
 
     @RequestMapping
     @PermissionLimit(adminuser = true)
     public String index(Model model) {
 
         // 执行器列表
-        List<XxlJobGroup> groupList = xxlJobGroupDao.findAll();
+        List<XxlJobGroupEntity> groupList = xxlJobGroupDao.findAll();
         model.addAttribute("groupList", groupList);
 
         return "user/user.index";
@@ -53,7 +58,7 @@ public class UserController {
                                         String username, int role) {
 
         // page list
-        List<XxlJobUser> list = xxlJobUserDao.pageList(start, length, username, role);
+        List<XxlJobUserEntity> list = xxlJobUserDao.pageList(start, length, username, role);
         int list_count = xxlJobUserDao.pageListCount(start, length, username, role);
 
         // package result
@@ -67,7 +72,7 @@ public class UserController {
     @RequestMapping("/add")
     @ResponseBody
     @PermissionLimit(adminuser = true)
-    public ReturnT<String> add(XxlJobUser xxlJobUser) {
+    public ReturnT<String> add(XxlJobUserEntity xxlJobUser) {
 
         // valid username
         if (!StringUtils.hasText(xxlJobUser.getUsername())) {
@@ -89,7 +94,7 @@ public class UserController {
         xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
 
         // check repeat
-        XxlJobUser existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
+        XxlJobUserEntity existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
         if (existUser != null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("user_username_repeat") );
         }
@@ -102,10 +107,10 @@ public class UserController {
     @RequestMapping("/update")
     @ResponseBody
     @PermissionLimit(adminuser = true)
-    public ReturnT<String> update(HttpServletRequest request, XxlJobUser xxlJobUser) {
+    public ReturnT<String> update(HttpServletRequest request, XxlJobUserEntity xxlJobUser) {
 
         // avoid opt login seft
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        XxlJobUserEntity loginUser = (XxlJobUserEntity) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
         if (loginUser.getUsername().equals(xxlJobUser.getUsername())) {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
@@ -133,7 +138,7 @@ public class UserController {
     public ReturnT<String> remove(HttpServletRequest request, int id) {
 
         // avoid opt login seft
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        XxlJobUserEntity loginUser = (XxlJobUserEntity) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
         if (loginUser.getId() == id) {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
@@ -159,10 +164,10 @@ public class UserController {
         String md5Password = DigestUtils.md5DigestAsHex(password.getBytes());
 
         // update pwd
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        XxlJobUserEntity loginUser = (XxlJobUserEntity) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 
         // do write
-        XxlJobUser existUser = xxlJobUserDao.loadByUserName(loginUser.getUsername());
+        XxlJobUserEntity existUser = xxlJobUserDao.loadByUserName(loginUser.getUsername());
         existUser.setPassword(md5Password);
         xxlJobUserDao.update(existUser);
 

@@ -2,10 +2,10 @@ package com.xxl.job.admin.core.alarm.impl;
 
 import com.xxl.job.admin.core.alarm.JobAlarm;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
-import com.xxl.job.admin.core.model.XxlJobGroup;
-import com.xxl.job.admin.core.model.XxlJobInfo;
-import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.jpaCode.model.XxlJobGroupEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
 import com.xxl.job.core.biz.model.ReturnT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class EmailJobAlarm implements JobAlarm {
      *
      * @param jobLog
      */
-    public boolean doAlarm(XxlJobInfo info, XxlJobLog jobLog){
+    public boolean doAlarm(XxlJobInfoEntity info, XxlJobLogEntity jobLog){
         boolean alarmResult = true;
 
         // send monitor email
@@ -48,7 +48,7 @@ public class EmailJobAlarm implements JobAlarm {
             }
 
             // email info
-            XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(Integer.valueOf(info.getJobGroup()));
+            XxlJobGroupEntity group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(Integer.valueOf(info.getJobGroup()));
             String personal = I18nUtil.getString("admin_name_full");
             String title = I18nUtil.getString("jobconf_monitor");
             String content = MessageFormat.format(loadEmailJobAlarmTemplate(),

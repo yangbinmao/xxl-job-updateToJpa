@@ -1,14 +1,14 @@
 package com.xxl.job.admin.controller;
 
 import com.xxl.job.admin.core.exception.XxlJobException;
-import com.xxl.job.admin.core.model.XxlJobGroup;
-import com.xxl.job.admin.core.model.XxlJobInfo;
-import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.admin.dao.XxlJobGroupDao;
-import com.xxl.job.admin.dao.XxlJobInfoDao;
-import com.xxl.job.admin.dao.XxlJobLogDao;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobGroupServer;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobInfoServer;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobLogServer;
+import com.xxl.job.admin.jpaCode.model.XxlJobGroupEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.KillParam;
 import com.xxl.job.core.biz.model.LogParam;
@@ -17,13 +17,13 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,21 +39,29 @@ import java.util.Map;
 public class JobLogController {
 	private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
 
-	@Resource
-	private XxlJobGroupDao xxlJobGroupDao;
-	@Resource
-	public XxlJobInfoDao xxlJobInfoDao;
-	@Resource
-	public XxlJobLogDao xxlJobLogDao;
+//	@Resource
+//	private XxlJobGroupDao xxlJobGroupDao;
+//	@Resource
+//	public XxlJobInfoDao xxlJobInfoDao;
+//	@Resource
+//	public XxlJobLogDao xxlJobLogDao;
+
+	@Autowired
+	private JpaXxlJobGroupServer xxlJobGroupDao;
+	@Autowired
+	public JpaXxlJobInfoServer xxlJobInfoDao;
+	@Autowired
+	public JpaXxlJobLogServer xxlJobLogDao;
+
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "0") Integer jobId) {
 
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<XxlJobGroupEntity> jobGroupList_all =  xxlJobGroupDao.findAll();
 
 		// filter group
-		List<XxlJobGroup> jobGroupList = JobInfoController.filterJobGroupByRole(request, jobGroupList_all);
+		List<XxlJobGroupEntity> jobGroupList = JobInfoController.filterJobGroupByRole(request, jobGroupList_all);
 		if (jobGroupList==null || jobGroupList.size()==0) {
 			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
 		}
@@ -62,7 +70,7 @@ public class JobLogController {
 
 		// 任务
 		if (jobId > 0) {
-			XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
+			XxlJobInfoEntity jobInfo = xxlJobInfoDao.loadById(jobId);
 			if (jobInfo == null) {
 				throw new RuntimeException(I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_unvalid"));
 			}
@@ -78,9 +86,9 @@ public class JobLogController {
 
 	@RequestMapping("/getJobsByGroup")
 	@ResponseBody
-	public ReturnT<List<XxlJobInfo>> getJobsByGroup(int jobGroup){
-		List<XxlJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
-		return new ReturnT<List<XxlJobInfo>>(list);
+	public ReturnT<List<XxlJobInfoEntity>> getJobsByGroup(int jobGroup){
+		List<XxlJobInfoEntity> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
+		return new ReturnT<List<XxlJobInfoEntity>>(list);
 	}
 	
 	@RequestMapping("/pageList")
@@ -105,7 +113,7 @@ public class JobLogController {
 		}
 		
 		// page query
-		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<XxlJobLogEntity> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		
 		// package result
@@ -121,7 +129,7 @@ public class JobLogController {
 
 		// base check
 		ReturnT<String> logStatue = ReturnT.SUCCESS;
-		XxlJobLog jobLog = xxlJobLogDao.load(id);
+		XxlJobLogEntity jobLog = xxlJobLogDao.load(id);
 		if (jobLog == null) {
             throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
 		}
@@ -143,7 +151,7 @@ public class JobLogController {
 
 			// is end
             if (logResult.getContent()!=null && logResult.getContent().getFromLineNum() > logResult.getContent().getToLineNum()) {
-                XxlJobLog jobLog = xxlJobLogDao.load(logId);
+                XxlJobLogEntity jobLog = xxlJobLogDao.load(logId);
                 if (jobLog.getHandleCode() > 0) {
                     logResult.getContent().setEnd(true);
                 }
@@ -160,8 +168,8 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<String> logKill(int id){
 		// base check
-		XxlJobLog log = xxlJobLogDao.load(id);
-		XxlJobInfo jobInfo = xxlJobInfoDao.loadById(log.getJobId());
+		XxlJobLogEntity log = xxlJobLogDao.load(id);
+		XxlJobInfoEntity jobInfo = xxlJobInfoDao.loadById(log.getJobId());
 		if (jobInfo==null) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
 		}

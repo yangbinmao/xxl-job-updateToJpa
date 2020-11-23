@@ -1,12 +1,9 @@
 package com.xxl.job.admin.jpaCode.jpaServer;
 
-import com.xxl.job.admin.core.model.XxlJobLogGlue;
+
 import com.xxl.job.admin.jpaCode.jpaDao.JpaXxlJobLogGlueDao;
-import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
 import com.xxl.job.admin.jpaCode.model.XxlJobLogGlueEntity;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

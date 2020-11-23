@@ -51,4 +51,15 @@ public class XxlJobLogReport {
     public void setFailCount(int failCount) {
         this.failCount = failCount;
     }
+
+    @Override
+    public String toString() {
+        return "XxlJobLogReport{" +
+                "id=" + id +
+                ", triggerDay=" + triggerDay +
+                ", runningCount=" + runningCount +
+                ", sucCount=" + sucCount +
+                ", failCount=" + failCount +
+                '}';
+    }
 }

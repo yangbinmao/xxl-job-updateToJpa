@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YBM on 2020/11/22 20:35
@@ -28,6 +29,15 @@ public class JpaXxlJobLogReportServer {
 
     public List<XxlJobLogReportEntity> queryLogReport(Date triggerDayFrom, Date triggerDayTo) {
         return dao.queryLogReport(triggerDayFrom, triggerDayTo);
+    }
+
+    public XxlJobLogReportEntity queryLogReportTotal() {
+        XxlJobLogReportEntity entity = new XxlJobLogReportEntity();
+        Map<String, Integer> map = dao.queryLogReportTotal();
+        entity.setFailCount(((Number)map.get("failCount")).intValue());
+        entity.setRunningCount(((Number)map.get("runningCount")).intValue());
+        entity.setSucCount(((Number)map.get("sucCount")).intValue());
+        return entity;
     }
 
 }

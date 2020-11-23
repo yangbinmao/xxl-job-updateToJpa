@@ -1,16 +1,12 @@
 package com.xxl.job.admin.jpaCode.jpaServer;
 
-import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.jpaCode.jpaDao.JpaXxlJobInfoDao;
 import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
@@ -26,7 +22,7 @@ public class JpaXxlJobInfoServer {
     @Autowired
     JpaXxlJobInfoDao jobInfoDao;
 
-    public List<XxlJobInfo> pageList( int offset,int pagesize,int jobGroup,int triggerStatus,String jobDesc,String executorHandler,String author){
+    public List<XxlJobInfoEntity> pageList( int offset,int pagesize,int jobGroup,int triggerStatus,String jobDesc,String executorHandler,String author){
         Specification querySpecifi = new Specification<XxlJobInfoEntity>() {
             @Override
             public Predicate toPredicate(Root<XxlJobInfoEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {

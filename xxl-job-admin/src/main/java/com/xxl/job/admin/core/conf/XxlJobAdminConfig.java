@@ -2,9 +2,10 @@ package com.xxl.job.admin.core.conf;
 
 import com.xxl.job.admin.core.alarm.JobAlarmer;
 import com.xxl.job.admin.core.scheduler.XxlJobScheduler;
-import com.xxl.job.admin.dao.*;
+import com.xxl.job.admin.jpaCode.jpaServer.*;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -69,16 +70,26 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     // dao, service
 
-    @Resource
-    private XxlJobLogDao xxlJobLogDao;
-    @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
-    @Resource
-    private XxlJobRegistryDao xxlJobRegistryDao;
-    @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
-    @Resource
-    private XxlJobLogReportDao xxlJobLogReportDao;
+//    @Resource
+//    private XxlJobLogDao xxlJobLogDao;
+//    @Resource
+//    private XxlJobInfoDao xxlJobInfoDao;
+//    @Resource
+//    private XxlJobRegistryDao xxlJobRegistryDao;
+//    @Resource
+//    private XxlJobGroupDao xxlJobGroupDao;
+//    @Resource
+//    private XxlJobLogReportDao xxlJobLogReportDao;
+    @Autowired
+    private JpaXxlJobLogServer xxlJobLogDao;
+    @Autowired
+    private JpaXxlJobInfoServer xxlJobInfoDao;
+    @Autowired
+    private JpaXxlJobRegistryServer xxlJobRegistryDao;
+    @Autowired
+    private JpaXxlJobGroupServer xxlJobGroupDao;
+    @Autowired
+    private JpaXxlJobLogReportServer xxlJobLogReportDao;
     @Resource
     private JavaMailSender mailSender;
     @Resource
@@ -123,23 +134,23 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
         return logretentiondays;
     }
 
-    public XxlJobLogDao getXxlJobLogDao() {
+    public JpaXxlJobLogServer getXxlJobLogDao() {
         return xxlJobLogDao;
     }
 
-    public XxlJobInfoDao getXxlJobInfoDao() {
+    public JpaXxlJobInfoServer getXxlJobInfoDao() {
         return xxlJobInfoDao;
     }
 
-    public XxlJobRegistryDao getXxlJobRegistryDao() {
+    public JpaXxlJobRegistryServer getXxlJobRegistryDao() {
         return xxlJobRegistryDao;
     }
 
-    public XxlJobGroupDao getXxlJobGroupDao() {
+    public JpaXxlJobGroupServer getXxlJobGroupDao() {
         return xxlJobGroupDao;
     }
 
-    public XxlJobLogReportDao getXxlJobLogReportDao() {
+    public JpaXxlJobLogReportServer getXxlJobLogReportDao() {
         return xxlJobLogReportDao;
     }
 

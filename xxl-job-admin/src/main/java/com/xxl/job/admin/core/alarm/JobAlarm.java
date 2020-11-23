@@ -1,7 +1,7 @@
 package com.xxl.job.admin.core.alarm;
 
-import com.xxl.job.admin.core.model.XxlJobInfo;
-import com.xxl.job.admin.core.model.XxlJobLog;
+import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
 
 /**
  * @author xuxueli 2020-01-19
@@ -15,6 +15,6 @@ public interface JobAlarm {
      * @param jobLog
      * @return
      */
-    public boolean doAlarm(XxlJobInfo info, XxlJobLog jobLog);
+    public boolean doAlarm(XxlJobInfoEntity info, XxlJobLogEntity jobLog);
 
 }

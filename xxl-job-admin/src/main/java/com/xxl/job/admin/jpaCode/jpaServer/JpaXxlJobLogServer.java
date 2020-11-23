@@ -1,13 +1,9 @@
 package com.xxl.job.admin.jpaCode.jpaServer;
 
 
-import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.jpaCode.jpaDao.JpaXxlJobLogDao;
-import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
 import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,7 +132,9 @@ public class JpaXxlJobLogServer {
     public int updateTriggerInfo(XxlJobLogEntity entity){
         return xxlJobLogDao.updateTriggerInfo(entity);
     }
-
+    public int updateHandleInfo(XxlJobLogEntity entity){
+        return xxlJobLogDao.updateHandleInfo(entity);
+    }
 
     public int delete(int jobId){
         return xxlJobLogDao.delete(jobId);
@@ -166,7 +163,7 @@ public class JpaXxlJobLogServer {
                     predicates.add(criteriaBuilder.equal(root.get("jobId"), jobId));
                 }
                 if (ObjectUtils.isNotEmpty(clearBeforeTime)) {
-                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("triggerTimeEnd"), clearBeforeTime));
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("triggerTime"), clearBeforeTime));
                 }
 
                 if (clearBeforeNum > 0) {

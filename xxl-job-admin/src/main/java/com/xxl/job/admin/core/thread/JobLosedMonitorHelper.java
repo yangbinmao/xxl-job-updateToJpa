@@ -1,8 +1,8 @@
 package com.xxl.job.admin.core.thread;
 
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
-import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class JobLosedMonitorHelper {
 						if (losedJobIds!=null && losedJobIds.size()>0) {
 							for (Long logId: losedJobIds) {
 
-								XxlJobLog jobLog = new XxlJobLog();
+								XxlJobLogEntity jobLog = new XxlJobLogEntity();
 								jobLog.setId(logId);
 
 								jobLog.setHandleTime(new Date());

@@ -1,28 +1,22 @@
 package com.xxl.job.admin.controller;
 
-import com.xxl.job.admin.core.model.XxlJobGroup;
-import com.xxl.job.admin.core.model.XxlJobRegistry;
+
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.admin.dao.XxlJobGroupDao;
-import com.xxl.job.admin.dao.XxlJobInfoDao;
-import com.xxl.job.admin.dao.XxlJobRegistryDao;
-import com.xxl.job.admin.jpaCode.jpaDao.JpaXxlJobGroupDao;
+
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobGroupServer;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobInfoServer;
+import com.xxl.job.admin.jpaCode.jpaServer.JpaXxlJobRegistryServer;
 import com.xxl.job.admin.jpaCode.model.XxlJobGroupEntity;
+import com.xxl.job.admin.jpaCode.model.XxlJobRegistryEntity;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.RegistryConfig;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -34,12 +28,19 @@ import java.util.*;
 @RequestMapping("/jobgroup")
 public class JobGroupController {
 
-	@Resource
-	public XxlJobInfoDao xxlJobInfoDao;
-	@Resource
-	public XxlJobGroupDao xxlJobGroupDao;//7
-	@Resource
-	private XxlJobRegistryDao xxlJobRegistryDao;
+//	@Resource
+//	public XxlJobInfoDao xxlJobInfoDao;
+//	@Resource
+//	public XxlJobGroupDao xxlJobGroupDao;//7
+//	@Resource
+//	private XxlJobRegistryDao xxlJobRegistryDao;
+
+	@Autowired
+	public JpaXxlJobInfoServer xxlJobInfoDao;
+	@Autowired
+	public JpaXxlJobGroupServer xxlJobGroupDao;//7
+	@Autowired
+	private JpaXxlJobRegistryServer xxlJobRegistryDao;
 
 
 	@RequestMapping
@@ -55,7 +56,7 @@ public class JobGroupController {
 										String appname, String title) {
 
 		// page query
-		List<XxlJobGroup> list = xxlJobGroupDao.pageList(start, length, appname, title);
+		List<XxlJobGroupEntity> list = xxlJobGroupDao.pageList(start, length, appname, title);
 		int list_count = xxlJobGroupDao.pageListCount(start, length, appname, title);
 
 		// package result
@@ -68,7 +69,7 @@ public class JobGroupController {
 
 	@RequestMapping("/save")
 	@ResponseBody
-	public ReturnT<String> save(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> save(XxlJobGroupEntity xxlJobGroup){
 
 		// valid
 		if (xxlJobGroup.getAppname()==null || xxlJobGroup.getAppname().trim().length()==0) {
@@ -98,7 +99,7 @@ public class JobGroupController {
 
 	@RequestMapping("/update")
 	@ResponseBody
-	public ReturnT<String> update(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> update(XxlJobGroupEntity xxlJobGroup){
 		// valid
 		if (xxlJobGroup.getAppname()==null || xxlJobGroup.getAppname().trim().length()==0) {
 			return new ReturnT<String>(500, (I18nUtil.getString("system_please_input")+"AppName") );
@@ -141,9 +142,9 @@ public class JobGroupController {
 
 	private List<String> findRegistryByAppName(String appnameParam){
 		HashMap<String, List<String>> appAddressMap = new HashMap<String, List<String>>();
-		List<XxlJobRegistry> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
+		List<XxlJobRegistryEntity> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
 		if (list != null) {
-			for (XxlJobRegistry item: list) {
+			for (XxlJobRegistryEntity item: list) {
 				if (RegistryConfig.RegistType.EXECUTOR.name().equals(item.getRegistryGroup())) {
 					String appname = item.getRegistryKey();
 					List<String> registryList = appAddressMap.get(appname);
@@ -171,7 +172,7 @@ public class JobGroupController {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_0") );
 		}
 
-		List<XxlJobGroup> allList = xxlJobGroupDao.findAll();
+		List<XxlJobGroupEntity> allList = xxlJobGroupDao.findAll();
 		if (allList.size() == 1) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_1") );
 		}
@@ -182,9 +183,9 @@ public class JobGroupController {
 
 	@RequestMapping("/loadById")
 	@ResponseBody
-	public ReturnT<XxlJobGroup> loadById(int id){
-		XxlJobGroup jobGroup = xxlJobGroupDao.load(id);
-		return jobGroup!=null?new ReturnT<XxlJobGroup>(jobGroup):new ReturnT<XxlJobGroup>(ReturnT.FAIL_CODE, null);
+	public ReturnT<XxlJobGroupEntity> loadById(int id){
+		XxlJobGroupEntity jobGroup = xxlJobGroupDao.load(id);
+		return jobGroup!=null?new ReturnT<XxlJobGroupEntity>(jobGroup):new ReturnT<XxlJobGroupEntity>(ReturnT.FAIL_CODE, null);
 	}
 
 }

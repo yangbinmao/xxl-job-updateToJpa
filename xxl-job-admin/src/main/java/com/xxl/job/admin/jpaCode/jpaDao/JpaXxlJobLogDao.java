@@ -1,8 +1,7 @@
 package com.xxl.job.admin.jpaCode.jpaDao;
 
-import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.jpaCode.model.XxlJobLogEntity;
-
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,9 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +23,13 @@ public interface JpaXxlJobLogDao extends JpaRepository<XxlJobLogEntity,Long>, Jp
 
     @Transactional
     @Modifying
-    @Query("update XxlJobLogEntity x set x.handleTime=:#{#XxlJobLogEntity.handleTime},x.handleCode=:#{#XxlJobLogEntity.handleCode},x.handleMsg=:#{#XxlJobLogEntity.handleMsg} where x.id=:#{#XxlJobLogEntity.id}")
+    @Query("update XxlJobLogEntity x set x.handleTime=:#{#XxlJobLogEntity.handleTime},x.handleCode=:#{#XxlJobLogEntity.handleCode},x.handleMsg=:#{#XxlJobLogEntity.handleMsg},x.executorAddress=:#{#XxlJobLogEntity.executorAddress},x.executorHandler=:#{#XxlJobLogEntity.executorHandler},x.executorParam=:#{#XxlJobLogEntity.executorParam},x.executorShardingParam=:#{#XxlJobLogEntity.executorShardingParam},x.executorFailRetryCount=:#{#XxlJobLogEntity.executorFailRetryCount} where x.id=:#{#XxlJobLogEntity.id}")
     public int updateTriggerInfo(@Param("XxlJobLogEntity") XxlJobLogEntity entity);
+
+    @Transactional
+    @Modifying
+    @Query("update XxlJobLogEntity x set x.handleTime=:#{#XxlJobLogEntity.handleTime},x.handleCode=:#{#XxlJobLogEntity.handleCode},x.handleMsg=:#{#XxlJobLogEntity.handleMsg} where x.id=:#{#XxlJobLogEntity.id}")
+    public int updateHandleInfo(@Param("XxlJobLogEntity")XxlJobLogEntity xxlJobLog);
 
     @Transactional
     @Modifying

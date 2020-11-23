@@ -1,7 +1,7 @@
 package com.xxl.job.admin.service;
 
 
-import com.xxl.job.admin.core.model.XxlJobInfo;
+import com.xxl.job.admin.jpaCode.model.XxlJobInfoEntity;
 import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Date;
@@ -33,7 +33,7 @@ public interface XxlJobService {
 	 * @param jobInfo
 	 * @return
 	 */
-	public ReturnT<String> add(XxlJobInfo jobInfo);
+	public ReturnT<String> add(XxlJobInfoEntity jobInfo);
 
 	/**
 	 * update job
@@ -41,7 +41,7 @@ public interface XxlJobService {
 	 * @param jobInfo
 	 * @return
 	 */
-	public ReturnT<String> update(XxlJobInfo jobInfo);
+	public ReturnT<String> update(XxlJobInfoEntity jobInfo);
 
 	/**
 	 * remove job
