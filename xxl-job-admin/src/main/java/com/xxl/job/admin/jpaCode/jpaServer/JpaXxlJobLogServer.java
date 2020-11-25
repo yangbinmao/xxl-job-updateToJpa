@@ -68,7 +68,11 @@ public class JpaXxlJobLogServer {
             }
 
         };
-        return xxlJobLogDao.findAll(querySpecifi,  PageRequest.of(offset,pagesize)).getContent();
+        int page=0;
+        if (offset!=0){
+            page =(((offset/pagesize)-1)<0)?0:(offset/pagesize)-1;
+        }
+        return xxlJobLogDao.findAll(querySpecifi,  PageRequest.of(page,pagesize)).getContent();
 
     }
 
@@ -142,7 +146,17 @@ public class JpaXxlJobLogServer {
 
     public Map<String, Object> findLogReport(Date from,Date to){
         //todo 这个数据获取没有问题，但是打印结果时候需要测试确定
-        return  xxlJobLogDao.findLogReport(from,to);
+        Map<String, Object> logReport = xxlJobLogDao.findLogReport(from, to);
+        if (ObjectUtils.isEmpty(logReport.get("triggerDayCount"))){
+            logReport.remove("triggerDayCount");
+        }
+        if (ObjectUtils.isEmpty(logReport.get("triggerDayCountRunning"))){
+            logReport.remove("triggerDayCountRunning");
+        }
+        if (ObjectUtils.isEmpty(logReport.get("triggerDayCountSuc"))){
+            logReport.remove("triggerDayCount");
+        }
+        return logReport;
     }
 
     public List<Long> findClearLogIds( int jobGroup, int jobId, Date clearBeforeTime,int clearBeforeNum, int pagesize){

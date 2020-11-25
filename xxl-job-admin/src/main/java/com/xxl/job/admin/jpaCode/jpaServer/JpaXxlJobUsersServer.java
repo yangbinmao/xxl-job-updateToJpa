@@ -45,7 +45,11 @@ public class JpaXxlJobUsersServer {
             }
 
         };
-        return dao.findAll(querySpecifi, PageRequest.of(offset,pagesize)).getContent();
+        int page=0;
+        if (offset!=0){
+            page =(((offset/pagesize)-1)<0)?0:(offset/pagesize)-1;
+        }
+        return dao.findAll(querySpecifi, PageRequest.of(page,pagesize)).getContent();
     }
 
     public int pageListCount(int offset, int pagesize, String username, int role){

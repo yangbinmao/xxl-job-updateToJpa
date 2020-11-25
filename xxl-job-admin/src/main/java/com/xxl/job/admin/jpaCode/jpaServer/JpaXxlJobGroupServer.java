@@ -77,8 +77,11 @@ public class JpaXxlJobGroupServer {
             }
 
         };
-
-        Page all = jobGroupDao.findAll(querySpecifi,  PageRequest.of(0,10));
+        int page=0;
+        if (offset!=0){
+            page =(((offset/pagesize)-1)<0)?0:(offset/pagesize)-1;
+        }
+        Page all = jobGroupDao.findAll(querySpecifi,  PageRequest.of(page,pagesize));
         return all.getContent();
     }
 

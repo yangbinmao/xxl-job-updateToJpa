@@ -52,8 +52,11 @@ public class JpaXxlJobInfoServer {
             }
 
         };
-
-        return jobInfoDao.findAll(querySpecifi,  PageRequest.of(offset,pagesize)).getContent();
+        int page=0;
+        if (offset!=0){
+            page =(((offset/pagesize)-1)<0)?0:(offset/pagesize)-1;
+        }
+        return jobInfoDao.findAll(querySpecifi,  PageRequest.of(page,pagesize)).getContent();
     }
 
 
