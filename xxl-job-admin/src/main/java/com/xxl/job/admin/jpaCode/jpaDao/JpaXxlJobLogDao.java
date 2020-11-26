@@ -36,7 +36,8 @@ public interface JpaXxlJobLogDao extends JpaRepository<XxlJobLogEntity,Long>, Jp
     @Query("delete from XxlJobLogEntity x where x.id=?1")
     public int delete(@Param("id")long jobId);
 
-    @Query("select count(x.triggerCode) as triggerDayCount  ," +
+    @Query("select " +
+            "count(x.triggerCode) as triggerDayCount  ," +
             "sum (case when(x.triggerCode in (0 ,200) and x.handleCode=0 )then 1 else 0 end ) as triggerDayCountRunning ," +
             "sum (case when  x.handleCode=200 then 1 else 0 end ) as triggerDayCountSuc  " +
             "from  XxlJobLogEntity  x where x.triggerTime between ?1 and  ?2 ")

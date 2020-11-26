@@ -11,10 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -147,16 +144,17 @@ public class JpaXxlJobLogServer {
     public Map<String, Object> findLogReport(Date from,Date to){
         //todo 这个数据获取没有问题，但是打印结果时候需要测试确定
         Map<String, Object> logReport = xxlJobLogDao.findLogReport(from, to);
-        if (ObjectUtils.isEmpty(logReport.get("triggerDayCount"))){
-            logReport.remove("triggerDayCount");
+        Map<String, Object> stringObjectHashMap = new HashMap<>(logReport);
+        if (ObjectUtils.isEmpty(stringObjectHashMap.get("triggerDayCount"))){
+            stringObjectHashMap.remove("triggerDayCount");
         }
-        if (ObjectUtils.isEmpty(logReport.get("triggerDayCountRunning"))){
-            logReport.remove("triggerDayCountRunning");
+        if (ObjectUtils.isEmpty(stringObjectHashMap.get("triggerDayCountRunning"))){
+            stringObjectHashMap.remove("triggerDayCountRunning");
         }
-        if (ObjectUtils.isEmpty(logReport.get("triggerDayCountSuc"))){
-            logReport.remove("triggerDayCount");
+        if (ObjectUtils.isEmpty(stringObjectHashMap.get("triggerDayCountSuc"))){
+            stringObjectHashMap.remove("triggerDayCountSuc");
         }
-        return logReport;
+        return stringObjectHashMap;
     }
 
     public List<Long> findClearLogIds( int jobGroup, int jobId, Date clearBeforeTime,int clearBeforeNum, int pagesize){

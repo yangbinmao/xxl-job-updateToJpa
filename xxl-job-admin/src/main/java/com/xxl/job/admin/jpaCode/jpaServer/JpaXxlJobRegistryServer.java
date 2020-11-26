@@ -27,7 +27,21 @@ public class JpaXxlJobRegistryServer {
     JpaXxlJobRegistryDao dao;
 
     public List<Integer> findDead(int timeout, Date nowTime) {
-        List<XxlJobRegistryEntity> all = findAll(timeout, nowTime);
+
+        Specification querySpecifi = new Specification<XxlJobRegistryEntity>() {
+            @Override
+            public Predicate toPredicate(Root<XxlJobRegistryEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList();//这是条件集合
+                //条件
+                Calendar nowTimeCal = Calendar.getInstance();
+                nowTimeCal.setTime(nowTime);
+                nowTimeCal.add(Calendar.SECOND, -timeout);
+                predicates.add(criteriaBuilder.lessThan(root.get("updateTime"), nowTimeCal.getTime()));
+                Predicate[] ps = new Predicate[predicates.size()];
+                return criteriaQuery.where(predicates.toArray(ps)).getRestriction();
+            }
+        };
+        List<XxlJobRegistryEntity> all = dao.findAll(querySpecifi);
         return all.stream().map(XxlJobRegistryEntity::getId).collect(Collectors.toList());
     }
 

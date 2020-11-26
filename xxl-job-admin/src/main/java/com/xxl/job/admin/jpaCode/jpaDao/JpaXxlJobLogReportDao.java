@@ -22,7 +22,11 @@ public interface JpaXxlJobLogReportDao extends JpaRepository<XxlJobLogReportEnti
 
 	@Transactional
 	@Modifying
-	@Query("update XxlJobLogReportEntity x set x.runningCount=:#{#xxlJobLogReport.runningCount},x.sucCount=:#{#xxlJobLogReport.sucCount},x.failCount=:#{#xxlJobLogReport.failCount} where x.triggerDay=:#{#xxlJobLogReport.triggerDay}")
+	@Query("update XxlJobLogReportEntity x set " +
+			"x.runningCount=:#{#xxlJobLogReport.runningCount}" +
+			",x.sucCount=:#{#xxlJobLogReport.sucCount}" +
+			",x.failCount=:#{#xxlJobLogReport.failCount} " +
+			"where x.triggerDay=:#{#xxlJobLogReport.triggerDay}")
 	public int update(@Param("xxlJobLogReport")XxlJobLogReportEntity xxlJobLogReport);
 
 	@Query("select x from XxlJobLogReportEntity x where x.triggerDay between ?1 and ?2 order by x.triggerDay asc ")
